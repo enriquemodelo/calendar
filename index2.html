@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/bootstrap/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/interaction/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/bootstrap/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/core/locales-all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/daygrid/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/list/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/luxon/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/moment-timezone/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/moment/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/timegrid/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mockjax/1.6.2/jquery.mockjax.min.js"></script>
+
+    <style>
+        .fc-day-grid-event .fc-content {
+            white-space: normal;
+        }
+    </style>
+    <script>
+        let calendar;
+        let date_picker;
+        let filter_option = "all";
+
+        $(document).ready(function() {
+            initCalendar();
+
+            refresh_calendar_filter();
+
+            event_click();
+        });
+
+        function initCalendar() {
+            var calendarEl = $("#calendar").get(0);
+            let today = new Date();
+
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                locale: 'es',
+                plugins: [
+                    "interaction",
+                    "dayGrid",
+                    "timeGrid",
+                    "list",
+                    "bootstrap",
+                    "moment"
+                ],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'timeGridDay,timeGridWeek,dayGridMonth,listWeek'
+                },
+                themeSystem: "bootstrap",
+                timeZone: "local",
+                showNonCurrentDates: false,
+                height: 900,
+
+                defaultDate: today,
+                navLinks: false,
+                businessHours: false,
+                editable: true,
+                selectable: true,
+                eventLimit: true,
+                lazyFetching: true,
+
+                views: {
+                    dayGridMonth: {
+                        eventLimit: 3
+                    }
+                },
+
+                events: events(),
+
+                eventRender: function(info) {
+
+                    if (filter_option !== "all" && info.event.extendedProps.estatus !== filter_option) {
+
+                        return false;
+                    }
+
+                }
+
+            });
+
+            calendar.render();
+        }
+
+        function refresh_calendar_filter() {
+            $(document).on("click", ".filter-container .filter", function(e) {
+                filter_option = $(this).val();
+                calendar.rerenderEvents();
+            });
+        }
+
+        function events() {
+            const startOfMonth = moment().startOf("month");
+
+            return [{
+                    title: "TEst Lunch 1",
+                    start: "2020-05-20T14:41:00+05:00",
+                    end: "2020-05-20T14:41:00+05:00",
+                    groupId: "university",
+                    estatus: '1'
+                }, {
+                    title: "University Lunch 1",
+                    start: '2023-02-05',
+                    groupId: "university",
+                    estatus: '1'
+                },
+
+                {
+                    title: "University Meeting 1",
+                    start: '2023-02-06',
+                    color: "#257e4a",
+                    groupId: "university",
+                    estatus: '1'
+                },
+
+                {
+                    title: "University Meeting 2",
+                    start: '2023-02-07',
+                    color: "#257e4a",
+                    groupId: "university",
+                    estatus: '1'
+                },
+
+                {
+                    title: "University Meeting 3",
+                    start: startOfMonth.add(1, "day").format(),
+                    color: "#257e4a",
+                    groupId: "university",
+                    estatus: '1'
+                },
+
+                {
+                    title: "University Meeting 4",
+                    start: startOfMonth.add(1, "day").format(),
+                    color: "#257e4a",
+                    groupId: "university",
+                    estatus: '1'
+                },
+
+                {
+                    title: "University Meeting 5",
+                    start: startOfMonth.add(1, "day").format(),
+                    color: "#ff9f89",
+                    groupId: "university",
+                    estatus: '1'
+                },
+
+                {
+                    title: "University Conference 1",
+                    start: startOfMonth.add(1, "day").format(),
+                    groupId: "university",
+                    estatus: '1'
+                },
+
+                {
+                    title: "University Party 1",
+                    start: startOfMonth.add(1, "day").format(),
+                    groupId: "university",
+                    estatus: '1'
+                },
+
+                {
+                    title: "University Party 2",
+                    start: startOfMonth.format(),
+                    groupId: "university",
+                    estatus: '1'
+                },
+
+                {
+                    title: "University Party 3",
+                    start: startOfMonth.format(),
+                    groupId: "university",
+                    estatus: '1'
+                },
+
+                {
+                    title: "University Party 4",
+                    start: startOfMonth.format(),
+                    groupId: "university",
+                    estatus: '1'
+                },
+
+                {
+                    title: "University Party 5",
+                    start: startOfMonth.format(),
+                    groupId: "university",
+                    estatus: '1'
+                },
+
+                {
+                    title: "University Party 6",
+                    start: startOfMonth.format(),
+                    groupId: "university",
+                    estatus: '1'
+                },
+
+                {
+                    title: "University Party 7",
+                    start: startOfMonth.format(),
+                    groupId: "university",
+                    estatus: '1'
+                },
+
+                {
+                    title: "School Party 1",
+                    start: startOfMonth.add(1, "day").format(),
+                    groupId: "school",
+                    estatus: '0'
+                },
+
+                {
+                    title: "School Party 2",
+                    start: startOfMonth.add(1, "day").format(),
+                    groupId: "school",
+                    estatus: '0'
+                },
+
+                {
+                    title: "School Party 3",
+                    start: startOfMonth.add(1, "day").format(),
+                    color: "#ff9f89",
+                    groupId: "school",
+                    estatus: '0'
+                },
+
+                {
+                    title: "School Party 4",
+                    start: moment().format(),
+                    color: "#ff9f89",
+                    groupId: "school",
+                    estatus: '0'
+                }
+            ];
+        }
+
+        function event_click() {
+            calendar.on("eventClick", function(calendar_event) {
+                console.log(calendar_event);
+            });
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <div class="container calendar-container mw-100 px-2">
+        <div class="row no-gutters">
+            <div class="col">
+                <div id='calendar' class=""></div>
+            </div>
+
+            <div class="col-3">
+                <div class="row no-gutters mt-5">
+                    <div class="col-10 mx-auto filter-container">
+
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="customRadio1" name="eventFilter" class="custom-control-input filter" value="all" checked="true">
+                            <label class="custom-control-label" for="customRadio1">Todos</label>
+                        </div>
+
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="customRadio2" name="eventFilter" class="custom-control-input filter" value="1">
+                            <label class="custom-control-label" for="customRadio2">Activos</label>
+                        </div>
+
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="customRadio3" name="eventFilter" class="custom-control-input filter" value="0">
+                            <label class="custom-control-label" for="customRadio3">Finalizados</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
